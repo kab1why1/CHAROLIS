@@ -1,0 +1,49 @@
+@model IEnumerable<charolis.Entities.User>
+@using Microsoft.AspNetCore.Authorization
+
+@{
+    ViewData["Title"] = "Список користувачів";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="mb-3">
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Створити користувача
+        </a>
+    }
+</div>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Логін</th>
+        <th>Email</th>
+        <th>Роль</th>
+        <th>Телефон</th>
+        <th>Адреса</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var u in Model)
+    {
+        <tr>
+            <td>@u.Username</td>
+            <td>@u.Email</td>
+            <td>@u.Role</td>
+            <td>@u.PhoneNumber</td>
+            <td>@u.Address</td>
+            <td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Edit" asp-route-id="@u.Id" class="btn btn-sm btn-warning ms-1">Редагувати</a>
+                    <a asp-action="Delete" asp-route-id="@u.Id" class="btn btn-sm btn-danger ms-1">Видалити</a>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

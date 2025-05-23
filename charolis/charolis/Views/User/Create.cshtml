@@ -1,0 +1,49 @@
+@{
+    ViewData["Title"] = "Створити користувача";
+    var roles = ViewBag.Roles as string[] ?? new[] { "User", "Admin" };
+}
+
+<h1>@ViewData["Title"]</h1>
+<div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+<form asp-action="Create" method="post" class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label">Логін *</label>
+        <input name="username" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Email *</label>
+        <input name="email" type="email" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Телефон</label>
+        <input name="phoneNumber" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Адреса</label>
+        <input name="address" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Роль *</label>
+        <select name="role" class="form-select">
+            <option value="User">Користувач</option>
+            <option value="Admin">Адміністратор</option>
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Пароль *</label>
+        <input name="password" type="password" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Підтвердження пароля *</label>
+        <input name="confirmPassword" type="password" class="form-control" />
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Створити</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Скасувати</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

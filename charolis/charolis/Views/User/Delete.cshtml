@@ -1,0 +1,28 @@
+@model charolis.Entities.User
+
+@{
+    ViewData["Title"] = "Видалення користувача";
+}
+
+<h2>Видалити користувача</h2>
+
+<div>
+    <h4>Ви дійсно хочете видалити цього користувача?</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Ім'я користувача</dt>
+        <dd class="col-sm-9">@Model.Username</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">Роль</dt>
+        <dd class="col-sm-9">@Model.Role</dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Так, видалити</button>
+        <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
+    </form>
+</div>
