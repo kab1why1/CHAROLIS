@@ -1,0 +1,45 @@
+@model charolis.Entities.Order
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Видалити замовлення";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+
+    <div class="alert alert-warning">
+        Ви дійсно бажаєте видалити замовлення користувача <strong>@Model.User.Username</strong> від @Model.CreatedAt.ToString("dd.MM.yyyy")?
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Користувач</dt>
+        <dd class="col-sm-9">@Model.User.Username</dd>
+
+        <dt class="col-sm-3">Дата створення</dt>
+        <dd class="col-sm-9">@Model.CreatedAt.ToString("g")</dd>
+
+        <dt class="col-sm-3">Загальна сума</dt>
+        <dd class="col-sm-9">@Model.Total.ToString("0.00") ₴</dd>
+
+        <dt class="col-sm-3">Товари</dt>
+        <dd class="col-sm-9">
+            <ul>
+                @foreach (var item in Model.Items)
+                {
+                    <li>@item.Product.Name – @item.Quantity шт. × @item.Product.Price.ToString("0.00") ₴</li>
+                }
+            </ul>
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Так, видалити
+        </button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">
+            <i class="bi bi-arrow-left"></i> Скасувати
+        </a>
+    </form>
+</div>
