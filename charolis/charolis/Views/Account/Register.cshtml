@@ -1,0 +1,51 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Реєстрація";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+<form asp-controller="Account" asp-action="Register" method="post" class="row g-3">
+
+    <div class="col-md-6">
+        <label class="form-label">Логін *</label>
+        <input name="username" class="form-control" />
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Email *</label>
+        <input name="email" class="form-control" type="email" />
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Пароль *</label>
+        <input name="password" class="form-control" type="password" minlength="6" />
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Підтвердження пароля *</label>
+        <input name="confirmPassword" class="form-control" type="password" />
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Телефон</label>
+        <input name="phoneNumber" class="form-control" type="tel" />
+    </div>
+
+    <div class="col-12">
+        <label class="form-label">Адреса</label>
+        <input name="address" class="form-control" maxlength="200" />
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Зареєструватися</button>
+        <a asp-action="Login" class="btn btn-link ms-3">У мене вже є акаунт</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

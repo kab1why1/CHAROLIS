@@ -1,0 +1,75 @@
+@model charolis.Entities.Order
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Створити замовлення";
+    var users    = (List<charolis.Entities.User>)ViewBag.Users;
+    var products = (List<charolis.Entities.Product>)ViewBag.Products;
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label class="form-label">Користувач</label>
+            <select name="userId" class="form-select" required>
+                <option value="">— оберіть користувача —</option>
+                @foreach (var u in users)
+                {
+                    <option value="@u.Id">@u.Username</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Товари та кількість</label>
+            <table class="table">
+                <thead class="table-light">
+                    <tr>
+                        <th>Оберіть</th>
+                        <th>Товар</th>
+                        <th>Кількість</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < products.Count; i++)
+                    {
+                        var p = products[i];
+                        <tr>
+                            <td>
+                                <input type="checkbox"
+                                       name="productIds"
+                                       value="@p.Id"
+                                       id="prod_@p.Id" />
+                            </td>
+                            <td>
+                                <label for="prod_@p.Id">@p.Name (@p.Price:0.00₴)</label>
+                            </td>
+                            <td>
+                                <input type="number"
+                                       name="quantities"
+                                       value="1"
+                                       min="1"
+                                       class="form-control" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i> Створити
+        </button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">
+            <i class="bi bi-arrow-left"></i> Назад
+        </a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

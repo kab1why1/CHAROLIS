@@ -1,0 +1,61 @@
+@model IEnumerable<charolis.Entities.Order>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Замовлення";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">@ViewData["Title"]</h1>
+        <div>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary me-2">
+                <i class="bi bi-house-door"></i> Головна
+            </a>
+            <a asp-action="Create" class="btn btn-success">
+                <i class="bi bi-plus-lg"></i> Створити
+            </a>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Поки що немає замовлень.</div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var order in Model)
+            {
+                <div class="col">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">Замовлення #@order.Id</h5>
+                            <p class="card-subtitle text-muted mb-2">Користувач: <strong>@order.User?.Username</strong></p>
+                            <p class="mb-2 text-muted small">@order.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+                            <ul class="list-unstyled small mb-3">
+                                @foreach (var item in order.Items)
+                                {
+                                    <li>
+                                        <i class="bi bi-box"></i>
+                                        @item.Product?.Name × @item.Quantity
+                                        <span class="text-muted">(@item.PriceAtPurchase.ToString("0.00") ₴)</span>
+                                    </li>
+                                }
+                            </ul>
+                            <div class="fw-bold">Сума: @order.Total.ToString("0.00") ₴</div>
+                        </div>
+                        <div class="card-footer bg-white border-0 d-flex justify-content-end gap-2">
+                            <a asp-action="Edit" asp-route-id="@order.Id" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i> Редагувати
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@order.Id" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i> Видалити
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
