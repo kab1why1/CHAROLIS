@@ -1,0 +1,22 @@
+@model charolis.Entities.Product
+
+@{
+    ViewData["Title"] = "Видалити товар";
+}
+
+<h2>Видалити товар</h2>
+
+<h4>Ви впевнені, що хочете видалити цей товар?</h4>
+
+<div>
+    <strong>Назва:</strong> @Model.Name <br />
+    <strong>Ціна:</strong> @Model.Price <br />
+    <strong>Опис:</strong> @Model.Description <br />
+    <strong>Наявність:</strong> @(Model.IsAvailable ? "Так" : "Ні")
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger mt-3">Видалити</button>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Скасувати</a>
+</form>

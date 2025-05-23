@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "Додати новий товар";
+}
+
+<h1>Додати новий товар</h1>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="Name">Назва товару</label>
+        <input type="text" class="form-control" id="Name" name="Name" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Description">Опис товару</label>
+        <textarea class="form-control" id="Description" name="Description"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="Price">Ціна</label>
+        <input type="number" class="form-control" id="Price" name="Price" required step="0.01" />
+    </div>
+
+    <div class="form-group">
+        <label for="IsAvailable">Наявність товару</label>
+        <select class="form-control" id="IsAvailable" name="IsAvailable">
+            <option value="true">В наявності</option>
+            <option value="false">Немає в наявності</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Створити товар</button>
+</form>
+
+<a href="@Url.Action("Index", "Product")" class="btn btn-secondary mt-3">Назад до списку товарів</a>

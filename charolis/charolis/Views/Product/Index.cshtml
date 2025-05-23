@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "Список товарів";
+}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Index">Головна</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="User" asp-action="Index">Користувачі</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Product" asp-action="Index">Товари</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Order" asp-action="Index">Замовлення</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h1>Список товарів</h1>
+    <a class="btn btn-primary mb-3" href="@Url.Action("Create", "Product")">Додати новий товар</a>
+    <a class="btn btn-secondary mb-3" href="@Url.Action("Index", "Home")">Повернутись на головну</a> <!-- Кнопка для повернення на головну сторінку -->
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Назва</th>
+            <th>Опис</th>
+            <th>Ціна</th>
+            <th>Доступність</th>
+            <th>Дії</th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>@product.Id</td>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price</td>
+                    <td>@product.IsAvailable</td>
+                    <td>
+                        <a href="@Url.Action("Edit", "Product", new { id = product.Id })" class="btn btn-warning btn-sm">Редагувати</a>
+                        <a href="@Url.Action("Delete", "Product", new { id = product.Id })" class="btn btn-danger btn-sm">Видалити</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
