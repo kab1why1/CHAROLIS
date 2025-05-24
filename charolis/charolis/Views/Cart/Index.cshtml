@@ -1,0 +1,79 @@
+﻿@model charolis.Models.CartViewModel
+
+@{
+    ViewData["Title"] = "Кошик";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="mb-3">
+    <strong>Поточний баланс: </strong> @Model.Balance.ToString("C")
+</div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>№</th>
+            <th>Опис</th>
+            <th>Дата створення</th>
+            <th>Сума</th>
+            <th>Статус оплати</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if (Model.Orders.Any())
+    {
+        @for (int i = 0; i < Model.Orders.Count; i++)
+        {
+            var order = Model.Orders[i];
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@order.Total.ToString("C")</td>
+                <td>
+                    @if (order.IsPaid)
+                    {
+                        <span class="badge bg-success">Оплачено</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Не оплачено</span>
+                    }
+                </td>
+                <td>
+                    @if (!order.IsPaid)
+                    {
+                        <form asp-action="Pay" method="post" style="display:inline;">
+                            <input type="hidden" name="orderId" value="@order.Id" />
+                            <button type="submit" class="btn btn-success btn-sm">Оплатити</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="CancelPayment" method="post" style="display:inline;">
+                            <input type="hidden" name="orderId" value="@order.Id" />
+                            <button type="submit" class="btn btn-warning btn-sm">Скасувати оплату</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="6" class="text-center">Кошик порожній.</td>
+        </tr>
+    }
+    </tbody>
+</table>
