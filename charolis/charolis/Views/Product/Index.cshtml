@@ -1,3 +1,5 @@
+@model IEnumerable<charolis.Entities.Product>
+
 @{
     ViewData["Title"] = "Список товарів";
 }
@@ -30,18 +32,18 @@
 <div class="container mt-5">
     <h1>Список товарів</h1>
     <a class="btn btn-primary mb-3" href="@Url.Action("Create", "Product")">Додати новий товар</a>
-    <a class="btn btn-secondary mb-3" href="@Url.Action("Index", "Home")">Повернутись на головну</a> <!-- Кнопка для повернення на головну сторінку -->
+    <a class="btn btn-secondary mb-3" href="@Url.Action("Index", "Home")">Повернутись на головну</a>
 
-    <table class="table">
+    <table class="table table-bordered table-striped">
         <thead>
-        <tr>
-            <th>Id</th>
-            <th>Назва</th>
-            <th>Опис</th>
-            <th>Ціна</th>
-            <th>Доступність</th>
-            <th>Дії</th>
-        </tr>
+            <tr>
+                <th>Id</th>
+                <th>Назва</th>
+                <th>Опис</th>
+                <th>Ціна</th>
+                <th>Доступність</th>
+                <th>Дії</th>
+            </tr>
         </thead>
         <tbody>
             @foreach (var product in Model)
@@ -50,9 +52,10 @@
                     <td>@product.Id</td>
                     <td>@product.Name</td>
                     <td>@product.Description</td>
-                    <td>@product.Price</td>
-                    <td>@product.IsAvailable</td>
+                    <td>@product.Price.ToString("C")</td>
+                    <td>@(product.IsAvailable ? "Так" : "Ні")</td>
                     <td>
+                        <a href="@Url.Action("Details", "Product", new { id = product.Id })" class="btn btn-info btn-sm">Деталі</a>
                         <a href="@Url.Action("Edit", "Product", new { id = product.Id })" class="btn btn-warning btn-sm">Редагувати</a>
                         <a href="@Url.Action("Delete", "Product", new { id = product.Id })" class="btn btn-danger btn-sm">Видалити</a>
                     </td>

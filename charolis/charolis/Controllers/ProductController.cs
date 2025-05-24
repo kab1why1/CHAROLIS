@@ -85,4 +85,14 @@ public class ProductController : Controller
         return RedirectToAction(nameof(Index));
     }
     
+    public async Task<IActionResult> Details(int id)
+    {
+        var product = await _context.Products
+            .Include(p => p.Reviews)
+            .ThenInclude(r => r.User)
+            .FirstOrDefaultAsync(p => p.Id == id);
+        if (product == null) return NotFound();
+        return View(product);
+    }
+    
 }
