@@ -17,6 +17,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Role);
         builder.Property(u => u.PhoneNumber);
         builder.Property(u => u.Address);
+
+        builder.Property(u => u.Balance)
+            .HasPrecision(18, 2)
+            .IsRequired()
+            .HasDefaultValue(100m);
         
         builder.ToTable("Users");
     }

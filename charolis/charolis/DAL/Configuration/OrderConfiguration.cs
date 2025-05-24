@@ -17,6 +17,12 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasPrecision(10, 2)
             .IsRequired();
         
+        builder.Property(o => o.IsPaid)
+            .IsRequired()
+            .HasDefaultValue(false);
+        
+        builder.Property(o => o.PaidAt);
+        
         builder.HasOne(x => x.User)
             .WithMany()
             .HasForeignKey(x => x.UserId)

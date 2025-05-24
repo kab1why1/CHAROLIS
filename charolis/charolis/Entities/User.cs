@@ -16,6 +16,8 @@ public class User : BaseEntity
     public string? PhoneNumber { get; set; }
     public string? Address { get; set; }
     public string Role { get; set; } = "User";
+    
+    public decimal Balance {get; set;}
 
     public override void SetInfo(int newId)
     {
