@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Редагувати користувача";
     var roles = ViewBag.Roles as string[] ?? new[] { "User", "Admin" };
-    var isAdmin = User.IsInRole("Admin");
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -16,46 +15,56 @@
         <label class="form-label">Логін *</label>
         <input name="username" value="@Model.Username" class="form-control" />
     </div>
+
     <div class="col-md-6">
         <label class="form-label">Email *</label>
         <input name="email" type="email" value="@Model.Email" class="form-control" />
     </div>
+
     <div class="col-md-6">
         <label class="form-label">Телефон</label>
         <input name="phoneNumber" value="@Model.PhoneNumber" class="form-control" />
     </div>
+
     <div class="col-md-6">
         <label class="form-label">Адреса</label>
         <input name="address" value="@Model.Address" class="form-control" />
     </div>
-    <div class="col-md-6">
-        <label class="form-label">Роль *</label>
-        @if (isAdmin)
-        {
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="col-md-6">
+            <label class="form-label">Роль *</label>
             <select name="role" class="form-select">
-                @foreach (var role in roles)
+                @foreach (var r in roles)
                 {
-                    <option value="@role" selected="@(role == Model.Role)">
-                        @(role == "Admin" ? "Адміністратор" : "Користувач")
-                    </option>
+                    <option value="@r" selected="@(r == Model.Role ? "selected" : null)">@r</option>
                 }
             </select>
-        }
-        else
-        {
-            <!-- Звичайному користувачу роль тільки для перегляду + приховане поле для відправки -->
-            <input type="hidden" name="role" value="@Model.Role" />
-            <input type="text" class="form-control" value="@(Model.Role == "Admin" ? "Адміністратор" : "Користувач")" disabled />
-        }
-    </div>
+
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Баланс</label>
+            <input name="balance" type="number" step="0.01" value="@Model.Balance" class="form-control" />
+        </div>
+    }
+    else
+    {
+        <!-- Користувач не може змінювати роль та баланс -->
+        <input type="hidden" name="role" value="@Model.Role" />
+    }
+
     <div class="col-md-6">
         <label class="form-label">Новий пароль</label>
         <input name="newPassword" type="password" class="form-control" />
     </div>
+
     <div class="col-md-6">
         <label class="form-label">Підтвердження нового пароля</label>
         <input name="confirmNewPassword" type="password" class="form-control" />
     </div>
+
     <div class="col-12">
         <button type="submit" class="btn btn-success">Зберегти</button>
         <a asp-action="Index" class="btn btn-secondary ms-2">Скасувати</a>

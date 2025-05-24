@@ -116,34 +116,28 @@ namespace charolis.Controllers
             string address,
             string role,
             string newPassword,
-            string confirmNewPassword)
+            string confirmNewPassword,
+            decimal? balance)
         {
-            var usernameCurrent = User.Identity?.Name;
-            if (usernameCurrent == null) return Unauthorized();
-
             User user;
 
-            if (id == null)
+            // Якщо користувач не адмін або id не переданий, редагуємо власний профіль
+            if (!User.IsInRole("Admin") || id == null)
             {
-                // Редагуємо власний профіль
+                var usernameCurrent = User.Identity?.Name;
+                if (usernameCurrent == null) return Unauthorized();
+
                 user = await _context.Users.FirstOrDefaultAsync(u => u.Username == usernameCurrent);
                 if (user == null) return NotFound();
 
-                // Звичайний користувач не може змінювати роль
+                // Користувач не може змінювати роль
                 role = user.Role;
             }
             else
             {
+                // Адмін редагує іншого користувача
                 user = await _context.Users.FindAsync(id.Value);
                 if (user == null) return NotFound();
-
-                var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == usernameCurrent);
-
-                // Якщо користувач не адміністратор і редагує не свій профіль — заборонити
-                if (!User.IsInRole("Admin") && currentUser.Id != user.Id)
-                {
-                    return Forbid();
-                }
             }
 
             username = username?.Trim() ?? "";
@@ -180,16 +174,20 @@ namespace charolis.Controllers
             user.Address = address;
             user.Role = role;
 
+            // Адмін може змінювати баланс
+            if (User.IsInRole("Admin") && balance.HasValue)
+            {
+                user.Balance = balance.Value;
+            }
+
             if (newPassword != "")
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
 
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
-            if (id == null)
-                return RedirectToAction(nameof(Profile));
-            else
-                return RedirectToAction(nameof(Index));
+            // Після редагування перекидаємо на головну сторінку
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: /User/Delete/5
@@ -226,7 +224,7 @@ namespace charolis.Controllers
 
             if (user == null) return NotFound();
 
-            return View(nameof(Profile), user);
+            return View(user);
         }
     }
 }
