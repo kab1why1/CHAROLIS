@@ -39,24 +39,22 @@ namespace charolis.Controllers
             string password,
             string confirmPassword)
         {
-            // Нормалізація
             username = username?.Trim() ?? "";
-            email    = email?.Trim()    ?? "";
+            email = email?.Trim() ?? "";
             phoneNumber = phoneNumber?.Trim();
-            address     = address?.Trim();
-            role        = string.IsNullOrWhiteSpace(role) ? "User" : role.Trim();
-            password        = password        ?? "";
+            address = address?.Trim();
+            role = string.IsNullOrWhiteSpace(role) ? "User" : role.Trim();
+            password = password ?? "";
             confirmPassword = confirmPassword ?? "";
 
-            // Валідація
-            if (username == "")       ModelState.AddModelError("", "Логін обов’язковий.");
-            if (email == "")          ModelState.AddModelError("", "Email обов’язковий.");
-            if (password.Length < 6)  ModelState.AddModelError("", "Пароль мінімум 6 символів.");
+            if (username == "") ModelState.AddModelError("", "Логін обов’язковий.");
+            if (email == "") ModelState.AddModelError("", "Email обов’язковий.");
+            if (password.Length < 6) ModelState.AddModelError("", "Пароль мінімум 6 символів.");
             if (password != confirmPassword) ModelState.AddModelError("", "Паролі не збігаються.");
             if (await _context.Users.AnyAsync(u => u.Username == username))
-                                      ModelState.AddModelError("", "Логін уже зайнятий.");
+                ModelState.AddModelError("", "Логін уже зайнятий.");
             if (await _context.Users.AnyAsync(u => u.Email == email))
-                                      ModelState.AddModelError("", "Email уже використовується.");
+                ModelState.AddModelError("", "Email уже використовується.");
 
             if (!ModelState.IsValid)
             {
@@ -66,11 +64,11 @@ namespace charolis.Controllers
 
             var user = new User
             {
-                Username     = username,
-                Email        = email,
-                PhoneNumber  = phoneNumber,
-                Address      = address,
-                Role         = role,
+                Username = username,
+                Email = email,
+                PhoneNumber = phoneNumber,
+                Address = address,
+                Role = role,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(password)
             };
 
@@ -79,20 +77,39 @@ namespace charolis.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /User/Edit/5
-        public async Task<IActionResult> Edit(int id)
+        // GET: /User/Edit or /User/Edit/5
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null) return NotFound();
+            User user;
+
+            if (id == null)
+            {
+                // Редагування власного профілю
+                var username = User.Identity?.Name;
+                if (username == null) return Unauthorized();
+
+                user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+                if (user == null) return NotFound();
+            }
+            else
+            {
+                // Адмін редагує користувача з id
+                if (!User.IsInRole("Admin"))
+                    return Forbid();
+
+                user = await _context.Users.FindAsync(id.Value);
+                if (user == null) return NotFound();
+            }
 
             ViewBag.Roles = new[] { "User", "Admin" };
             return View(user);
         }
 
-        // POST: /User/Edit/5
+        // POST: /User/Edit or /User/Edit/5
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
-            int id,
+            int? id,
             string username,
             string email,
             string phoneNumber,
@@ -101,21 +118,44 @@ namespace charolis.Controllers
             string newPassword,
             string confirmNewPassword)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null) return NotFound();
+            var usernameCurrent = User.Identity?.Name;
+            if (usernameCurrent == null) return Unauthorized();
 
-            // Нормалізація
+            User user;
+
+            if (id == null)
+            {
+                // Редагуємо власний профіль
+                user = await _context.Users.FirstOrDefaultAsync(u => u.Username == usernameCurrent);
+                if (user == null) return NotFound();
+
+                // Звичайний користувач не може змінювати роль
+                role = user.Role;
+            }
+            else
+            {
+                user = await _context.Users.FindAsync(id.Value);
+                if (user == null) return NotFound();
+
+                var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == usernameCurrent);
+
+                // Якщо користувач не адміністратор і редагує не свій профіль — заборонити
+                if (!User.IsInRole("Admin") && currentUser.Id != user.Id)
+                {
+                    return Forbid();
+                }
+            }
+
             username = username?.Trim() ?? "";
-            email    = email?.Trim()    ?? "";
+            email = email?.Trim() ?? "";
             phoneNumber = phoneNumber?.Trim();
-            address     = address?.Trim();
-            role        = string.IsNullOrWhiteSpace(role) ? user.Role : role.Trim();
-            newPassword        = newPassword        ?? "";
+            address = address?.Trim();
+            role = string.IsNullOrWhiteSpace(role) ? user.Role : role.Trim();
+            newPassword = newPassword ?? "";
             confirmNewPassword = confirmNewPassword ?? "";
 
-            // Валідація
             if (username == "") ModelState.AddModelError("", "Логін обов’язковий.");
-            if (email == "")    ModelState.AddModelError("", "Email обов’язковий.");
+            if (email == "") ModelState.AddModelError("", "Email обов’язковий.");
 
             if (newPassword != "")
             {
@@ -123,27 +163,33 @@ namespace charolis.Controllers
                 if (newPassword != confirmNewPassword) ModelState.AddModelError("", "Нові паролі не збігаються.");
             }
 
+            if (user.Username != username && await _context.Users.AnyAsync(u => u.Username == username))
+                ModelState.AddModelError("", "Логін уже зайнятий.");
+            if (user.Email != email && await _context.Users.AnyAsync(u => u.Email == email))
+                ModelState.AddModelError("", "Email уже використовується.");
+
             if (!ModelState.IsValid)
             {
                 ViewBag.Roles = new[] { "User", "Admin" };
                 return View(user);
             }
 
-            // Оновлюємо поля
-            user.Username   = username;
-            user.Email      = email;
-            user.PhoneNumber= phoneNumber;
-            user.Address    = address;
-            user.Role       = role;
+            user.Username = username;
+            user.Email = email;
+            user.PhoneNumber = phoneNumber;
+            user.Address = address;
+            user.Role = role;
 
             if (newPassword != "")
-            {
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
-            }
 
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            if (id == null)
+                return RedirectToAction(nameof(Profile));
+            else
+                return RedirectToAction(nameof(Index));
         }
 
         // GET: /User/Delete/5
@@ -165,6 +211,22 @@ namespace charolis.Controllers
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: /User/Profile
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var username = User.Identity?.Name;
+            if (username == null) return Unauthorized();
+
+            var user = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null) return NotFound();
+
+            return View(nameof(Profile), user);
         }
     }
 }
