@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Редагувати користувача";
     var roles = ViewBag.Roles as string[] ?? new[] { "User", "Admin" };
+    var isAdmin = User.IsInRole("Admin");
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -29,10 +30,23 @@
     </div>
     <div class="col-md-6">
         <label class="form-label">Роль *</label>
-        <select name="role" class="form-select">
-            <option value="User">Користувач</option>
-            <option value="Admin">Адміністратор</option>
-        </select>
+        @if (isAdmin)
+        {
+            <select name="role" class="form-select">
+                @foreach (var role in roles)
+                {
+                    <option value="@role" selected="@(role == Model.Role)">
+                        @(role == "Admin" ? "Адміністратор" : "Користувач")
+                    </option>
+                }
+            </select>
+        }
+        else
+        {
+            <!-- Звичайному користувачу роль тільки для перегляду + приховане поле для відправки -->
+            <input type="hidden" name="role" value="@Model.Role" />
+            <input type="text" class="form-control" value="@(Model.Role == "Admin" ? "Адміністратор" : "Користувач")" disabled />
+        }
     </div>
     <div class="col-md-6">
         <label class="form-label">Новий пароль</label>
