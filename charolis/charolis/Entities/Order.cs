@@ -9,5 +9,9 @@ public class Order : BaseEntity
     public DateTime CreatedAt { get; set; }
     
     public decimal Total { get; set; }
+    
+    public bool IsPaid { get; set; } = false;
+    public DateTime? PaidAt { get; set; }
+    
     public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
 }
