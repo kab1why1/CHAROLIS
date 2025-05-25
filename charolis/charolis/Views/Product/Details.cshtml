@@ -1,0 +1,101 @@
+﻿@model charolis.Entities.Product
+@using System.Security.Claims
+
+<h2>@Model.Name</h2>
+<p>@Model.Description</p>
+<p>Ціна: @Model.Price.ToString("C")</p>
+
+<hr />
+<h3>Відгуки</h3>
+<div>
+    @foreach (var r in Model.Reviews)
+    {
+        <div class="border p-2 mb-2">
+            <strong>@r.User.Username</strong> • @r.CreatedAt.ToLocalTime().ToString("g")
+            <div>Рейтинг: @r.Rating/5</div>
+            <p>@r.Comment</p>
+            @if (User.IsInRole("Admin") || r.UserId == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!))
+            {
+                <div class="mt-2">
+                    <button type="button" class="btn btn-link p-0 me-2" data-bs-toggle="modal" data-bs-target="#editReviewModal-@r.Id">
+                        Редагувати
+                    </button>
+                    <form asp-controller="Review" asp-action="Delete" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@r.Id" />
+                        <button type="submit" class="btn btn-link p-0 text-danger">Видалити</button>
+                    </form>
+                </div>
+
+                <div class="modal fade" id="editReviewModal-@r.Id" tabindex="-1" aria-labelledby="editReviewModalLabel-@r.Id" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editReviewModalLabel-@r.Id">Редагувати відгук</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form asp-controller="Review" asp-action="Edit" method="post">
+                                    <input type="hidden" name="Id" value="@r.Id" />
+                                    <input type="hidden" name="ProductId" value="@Model.Id" />
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Рейтинг</label>
+                                        <select name="Rating" class="form-select">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i == r.Rating)
+                                                {
+                                                    <option value="@i" selected>@i</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@i">@i</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Коментар</label>
+                                        <textarea name="Comment" class="form-control">@r.Comment</textarea>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                                        <button type="submit" class="btn btn-primary">Зберегти</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <hr />
+    <h4>Залишити відгук</h4>
+    <form asp-controller="Review" asp-action="Create" method="post">
+        <input type="hidden" name="ProductId" value="@Model.Id" />
+        <div class="mb-3">
+            <label class="form-label">Рейтинг</label>
+            <select name="Rating" class="form-select">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <option value="@i">@i</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Коментар</label>
+            <textarea name="Comment" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Відправити</button>
+    </form>
+}
+else
+{
+    <p>Будь ласка, <a asp-controller="Account" asp-action="Login">увійдіть</a>, щоб залишити відгук.</p>
+}

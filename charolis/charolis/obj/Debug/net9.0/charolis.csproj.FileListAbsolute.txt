@@ -118,7 +118,6 @@ E:\op\charolis\charolis\charolis\obj\Debug\net9.0\charolis.sourcelink.json
 E:\op\charolis\charolis\charolis\obj\Debug\net9.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 E:\op\charolis\charolis\charolis\obj\Debug\net9.0\scopedcss\bundle\charolis.styles.css
 E:\op\charolis\charolis\charolis\obj\Debug\net9.0\scopedcss\projectbundle\charolis.bundle.scp.css
-E:\op\charolis\charolis\charolis\obj\Debug\net9.0\compressed\aevm1uviho-b9sayid5wm.gz
 E:\op\charolis\charolis\charolis\obj\Debug\net9.0\compressed\0iuvfwci18-61n19gt1b8.gz
 E:\op\charolis\charolis\charolis\obj\Debug\net9.0\compressed\qoss47tk6b-xtxxf3hu2r.gz
 E:\op\charolis\charolis\charolis\obj\Debug\net9.0\compressed\pg6ax0fp9w-t1cqhe9u97.gz
@@ -197,3 +196,4 @@ E:\op\charolis\charolis\charolis\obj\Debug\net9.0\refint\charolis.dll
 E:\op\charolis\charolis\charolis\obj\Debug\net9.0\charolis.pdb
 E:\op\charolis\charolis\charolis\obj\Debug\net9.0\charolis.genruntimeconfig.cache
 E:\op\charolis\charolis\charolis\obj\Debug\net9.0\ref\charolis.dll
+E:\op\charolis\charolis\charolis\obj\Debug\net9.0\compressed\aevm1uviho-b9sayid5wm.gz

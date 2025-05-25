@@ -4,24 +4,207 @@
     ViewData["Title"] = "Логін";
 }
 
-<h1>@ViewData["Title"]</h1>
+<style>
+    /* Анімація фону з зірками */
+    @@keyframes twinkle {
+        0% { opacity: 0.3; }
+        50% { opacity: 1; }
+        100% { opacity: 0.3; }
+    }
 
-<div asp-validation-summary="All" class="text-danger mb-3"></div>
+    .login-wrapper {
+        position: relative;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 70% 20%, rgba(127,90,240,0.1) 0%, transparent 30%),
+            radial-gradient(circle at 30% 80%, rgba(167,139,250,0.1) 0%, transparent 30%),
+            #0F0E15;
+        min-height: 100vh;
+    }
 
-<form asp-action="Login" method="post" class="row g-3">
-    <div class="col-md-6">
-        <label class="form-label">Логін *</label>
-        <input name="username" class="form-control" />
+    .star {
+        position: absolute;
+        background: #A78BFA;
+        border-radius: 50%;
+        animation: twinkle 3s infinite;
+    }
+
+    /* Стилі форми */
+    .login-container {
+        background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" /></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.2"/></svg>'),
+        linear-gradient(145deg, #0F0E15 0%, #1A1A1A 100%);
+        border: 1px solid #7F5AF0;
+        border-radius: 20px;
+        box-shadow: 0 0 40px rgba(127,90,240,0.3);
+        transform-style: preserve-3d;
+        position: relative;
+        padding: 2rem;
+    }
+
+    .login-container::before {
+        content: '';
+        position: absolute;
+        inset: -10px;
+        background: linear-gradient(45deg, #7F5AF0, #A78BFA, transparent 50%);
+        z-index: -1;
+        filter: blur(20px);
+        opacity: 0.3;
+    }
+
+    .form-control {
+        background: rgba(26,26,26,0.8);
+        border: 2px solid #7F5AF0;
+        color: #F8F9FA;
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        padding: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .form-control:focus {
+        border-color: #A78BFA;
+        box-shadow: 0 0 15px rgba(167,139,250,0.3);
+        background: rgba(26,26,26,0.9);
+    }
+
+    /* Анімовані підказки */
+    .floating-label {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .floating-label input:focus ~ label,
+    .floating-label input:not(:placeholder-shown) ~ label {
+        transform: translateY(-180%);
+        font-size: 0.8em;
+        color: #A78BFA;
+    }
+
+    .floating-label label {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: all 0.3s ease;
+        color: #7F5AF0;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    /* Магічні кнопки */
+    .magic-btn {
+        background: linear-gradient(45deg, #7F5AF0, #A78BFA);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        transform: translateZ(0);
+    }
+
+    .magic-btn::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg,
+        transparent 20%,
+        rgba(255,255,255,0.2) 50%,
+        transparent 80%);
+        animation: shine 3s infinite;
+    }
+
+    @@keyframes shine {
+        100% { transform: rotate(360deg); }
+    }
+
+    .magic-btn:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(127,90,240,0.4);
+    }
+
+    /* Хвиляста анімація */
+    .wave-effect {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .wave-effect::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 50% 50%,
+        rgba(167,139,250,0.3) 0%,
+        transparent 70%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .wave-effect:hover::after {
+        opacity: 1;
+    }
+
+    h2 {
+        color: #F8F9FA;
+        position: relative;
+        padding-bottom: 1rem;
+        text-align: center;
+    }
+
+    h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #7F5AF0, #A78BFA);
+        border-radius: 2px;
+    }
+</style>
+
+<div class="login-wrapper d-flex justify-content-center align-items-center">
+    <!-- Зірки -->
+    <div class="star" style="width: 3px; height: 3px; top: 15%; left: 20%"></div>
+    <div class="star" style="width: 2px; height: 2px; top: 70%; left: 80%"></div>
+    <div class="star" style="width: 4px; height: 4px; top: 40%; left: 65%"></div>
+
+    <div class="login-container" style="min-width: 400px; max-width: 500px; width: 100%;">
+        <h2 class="mb-5">Логін</h2>
+
+        <div asp-validation-summary="All" class="text-danger mb-4"></div>
+
+        <form asp-action="Login" method="post">
+            <div class="floating-label mb-4 wave-effect">
+                <input id="username" name="username" class="form-control" placeholder=" " />
+                <label for="username">Ім'я користувача</label>
+            </div>
+
+            <div class="floating-label mb-5 wave-effect">
+                <input id="password" name="password" type="password" class="form-control" placeholder=" " />
+                <label for="password">Пароль</label>
+            </div>
+
+            <div class="d-grid gap-3">
+                <button type="submit" class="magic-btn btn-lg text-white">
+                    <i class="fas fa-key me-2"></i>Увійти
+                </button>
+
+                <a asp-action="Register" class="btn btn-outline-light btn-lg magic-btn">
+                    <i class="fas fa-scroll me-2"></i>Реєстрація
+                </a>
+            </div>
+        </form>
     </div>
-    <div class="col-md-6">
-        <label class="form-label">Пароль *</label>
-        <input name="password" class="form-control" type="password" />
-    </div>
-    <div class="col-12">
-        <button type="submit" class="btn btn-primary">Увійти</button>
-        <a asp-action="Register" class="btn btn-link ms-3">Зареєструватися</a>
-    </div>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

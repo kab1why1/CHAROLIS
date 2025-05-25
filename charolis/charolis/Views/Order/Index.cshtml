@@ -5,57 +5,233 @@
     ViewData["Title"] = "Замовлення";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">@ViewData["Title"]</h1>
-        <div>
-            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary me-2">
-                <i class="bi bi-house-door"></i> Головна
-            </a>
-            <a asp-action="Create" class="btn btn-success">
-                <i class="bi bi-plus-lg"></i> Створити
-            </a>
-        </div>
-    </div>
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info">Поки що немає замовлень.</div>
-    }
-    else
-    {
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            @foreach (var order in Model)
-            {
-                <div class="col">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-body">
-                            <h5 class="card-title mb-1">Замовлення #@order.Id</h5>
-                            <p class="card-subtitle text-muted mb-2">Користувач: <strong>@order.User?.Username</strong></p>
-                            <p class="mb-2 text-muted small">@order.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
-                            <ul class="list-unstyled small mb-3">
-                                @foreach (var item in order.Items)
-                                {
-                                    <li>
-                                        <i class="bi bi-box"></i>
-                                        @item.Product?.Name × @item.Quantity
-                                        <span class="text-muted">(@item.PriceAtPurchase.ToString("0.00") ₴)</span>
-                                    </li>
-                                }
-                            </ul>
-                            <div class="fw-bold">Сума: @order.Total.ToString("0.00") ₴</div>
-                        </div>
-                        <div class="card-footer bg-white border-0 d-flex justify-content-end gap-2">
-                            <a asp-action="Edit" asp-route-id="@order.Id" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil"></i> Редагувати
-                            </a>
-                            <a asp-action="Delete" asp-route-id="@order.Id" class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i> Видалити
-                            </a>
-                        </div>
+<div class="admin-dashboard">
+    <div class="container-fluid">
+        <div class="row g-4">
+            <!-- Заголовок -->
+            <div class="col-12">
+                <div class="dashboard-header p-4 magic-header mb-4">
+                    <h1 class="mb-0">
+                        <i class="fas fa-scroll me-3"></i>@ViewData["Title"]
+                    </h1>
+                    <div class="magic-sparkles"></div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="btn-group">
+                        <a asp-action="Create" class="btn btn-magic-action ms-3">
+                            <i class="fas fa-rune me-2"></i>Нове замовлення
+                        </a>
                     </div>
                 </div>
-            }
+
+                @if (!Model.Any())
+                {
+                    <div class="magic-alert">
+                        <i class="fas fa-university me-2"></i>Немає замовлень
+                    </div>
+                }
+                else
+                {
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                        @foreach (var order in Model)
+                        {
+                            <div class="col">
+                                <div class="card magic-order-card">
+                                    <div class="card-header magic-card-header">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-seal me-2"></i>Замовлення #@order.Id
+                                            <span class="float-end">@order.CreatedAt.ToString("f")</span>
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="magic-client-info">
+                                            <i class="fas fa-hat-wizard me-2"></i>
+                                            <span class="text-arcana">@order.User?.Username</span>
+                                        </div>
+                                        
+                                        <div class="magic-items-list">
+                                            @foreach (var item in order.Items)
+                                            {
+                                                <div class="magic-item">
+                                                    <i class="fas fa-potion me-2"></i>
+                                                    <span class="item-name">@item.Product?.Name</span>
+                                                    <span class="item-quantity">×@item.Quantity</span>
+                                                    <span class="item-price">(@item.PriceAtPurchase.ToString("0.00") ₴)</span>
+                                                </div>
+                                            }
+                                        </div>
+                                        
+                                        <div class="magic-total">
+                                            <span class="total-label">Сума замовлення:</span>
+                                            <span class="total-value">@order.Total.ToString("0.00") ₴</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer magic-card-footer">
+                                        <a asp-action="Edit" asp-route-id="@order.Id" class="btn btn-magic-edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@order.Id" class="btn btn-magic-delete">
+                                            <i class="fas fa-ban"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
         </div>
-    }
+    </div>
 </div>
+
+<style>
+    .admin-dashboard {
+        background: #0f0e15;
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    .magic-header {
+        background: linear-gradient(45deg, #2A0944, #3B185F);
+        border: 2px solid #7F5AF0;
+        border-radius: 15px;
+        box-shadow: 0 0 30px rgba(127,90,240,0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .magic-header h1 {
+        color: #A78BFA;
+        font-family: 'MedievalSharp', cursive;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .magic-alert {
+        background: rgba(63, 43, 105, 0.3);
+        border: 2px solid #7F5AF0;
+        border-radius: 10px;
+        color: #A78BFA;
+        padding: 1.5rem;
+        text-align: center;
+        font-size: 1.2rem;
+    }
+
+    .magic-order-card {
+        background: rgba(26,26,26,0.9);
+        border: 2px solid #7F5AF0;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        color: #F8F9FA;
+    }
+
+    .magic-order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(127,90,240,0.2);
+    }
+
+    .magic-card-header {
+        background: linear-gradient(45deg, #3B185F, #7F5AF0);
+        border-bottom: 2px solid #A78BFA;
+        color: #F8F9FA !important;
+        font-family: 'MedievalSharp', cursive;
+    }
+
+    .magic-client-info {
+        background: rgba(63, 43, 105, 0.3);
+        padding: 0.8rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    .text-arcana {
+        color: #A78BFA;
+        font-weight: bold;
+    }
+
+    .magic-items-list {
+        border-left: 3px solid #7F5AF0;
+        padding-left: 1rem;
+        margin: 1rem 0;
+    }
+
+    .magic-item {
+        padding: 0.5rem 0;
+        border-bottom: 1px dashed rgba(167,139,250,0.2);
+    }
+
+    .item-name {
+        color: #A78BFA;
+    }
+
+    .item-quantity {
+        color: #7F5AF0;
+        font-weight: bold;
+    }
+
+    .magic-total {
+        background: rgba(63, 43, 105, 0.3);
+        padding: 1rem;
+        border-radius: 8px;
+        font-size: 1.1rem;
+    }
+
+    .total-value {
+        color: #A78BFA;
+        float: right;
+        font-weight: bold;
+    }
+
+    .magic-card-footer {
+        background: rgba(26,26,26,0.9);
+        border-top: 2px solid #7F5AF0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+    }
+
+    .btn-magic-action {
+        background: linear-gradient(45deg, #3B185F, #7F5AF0);
+        border: none;
+        color: #F8F9FA;
+        border-radius: 8px;
+        padding: 0.8rem 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-magic-action:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(127,90,240,0.4);
+    }
+
+    .btn-magic-edit, .btn-magic-delete {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .btn-magic-edit {
+        background: linear-gradient(45deg, #3B185F, #7F5AF0);
+        border: 1px solid #A78BFA;
+    }
+
+    .btn-magic-delete {
+        background: linear-gradient(45deg, #5A1B3D, #A91B4E);
+        border: 1px solid #FF7AA8;
+    }
+
+    @@keyframes magic-glow {
+        0% { opacity: 0.3; }
+        50% { opacity: 0.7; }
+        100% { opacity: 0.3; }
+    }
+</style>

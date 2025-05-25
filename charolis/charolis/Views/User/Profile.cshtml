@@ -1,0 +1,202 @@
+﻿@model charolis.Entities.User
+
+@{
+    ViewData["Title"] = "Профіль користувача";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<div class="magic-profile-container">
+    @if (Model == null)
+    {
+        <div class="magic-not-found">
+            <i class="fas fa-ghost"></i>
+            <h3>Користувача не знайдено</h3>
+            <p>Цей профіль зник у магічній млі...</p>
+        </div>
+    }
+    else
+    {
+        <div class="magic-profile-header">
+            <h1 class="magic-title">
+                <i class="fas fa-scroll"></i> @ViewData["Title"]
+            </h1>
+        </div>
+
+        <div class="magic-profile-card">
+            <div class="profile-info-item">
+                <i class="fas fa-user-alt"></i>
+                <span class="info-label">Логін:</span>
+                <span class="info-value">@Model.Username</span>
+            </div>
+
+            <div class="profile-info-item">
+                <i class="fas fa-envelope"></i>
+                <span class="info-label">Email:</span>
+                <span class="info-value">@Model.Email</span>
+            </div>
+
+            <div class="profile-info-item">
+                <i class="fas fa-phone"></i>
+                <span class="info-label">Телефон:</span>
+                <span class="info-value">@Model.PhoneNumber</span>
+            </div>
+
+            <div class="profile-info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span class="info-label">Адреса:</span>
+                <span class="info-value">@Model.Address</span>
+            </div>
+
+            <div class="profile-info-item highlight">
+                <i class="fas fa-coins"></i>
+                <span class="info-label">Баланс:</span>
+                <span class="info-value gold">@Model.Balance.ToString("C")</span>
+            </div>
+
+            <div class="profile-info-item">
+                <i class="fas fa-shield-alt"></i>
+                <span class="info-label">Роль:</span>
+                <span class="info-value role-badge @Model.Role.ToLower()">@Model.Role</span>
+            </div>
+
+            <a asp-action="Edit" class="magic-edit-btn">
+                <i class="fas fa-edit"></i> Редагувати
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    .magic-profile-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: rgba(15,14,21,0.95);
+        border: 2px solid #7F5AF0;
+        border-radius: 15px;
+        box-shadow: 0 0 30px rgba(127,90,240,0.2);
+    }
+
+    .magic-profile-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    .magic-title {
+        font-family: 'MedievalSharp', cursive;
+        color: #A78BFA;
+        text-shadow: 0 0 10px rgba(167,139,250,0.3);
+    }
+
+    .magic-user-icon {
+        font-size: 4rem;
+        color: #7F5AF0;
+        margin: 1rem 0;
+        text-shadow: 0 0 15px rgba(127,90,240,0.3);
+    }
+
+    .magic-profile-card {
+        background: rgba(26,26,26,0.9);
+        border: 2px solid #7F5AF0;
+        border-radius: 15px;
+        padding: 2rem;
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+
+    .magic-profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(127,90,240,0.3);
+    }
+
+    .profile-info-item {
+        display: flex;
+        align-items: center;
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: rgba(63, 43, 105, 0.3);
+        border-radius: 8px;
+        border-left: 4px solid #7F5AF0;
+    }
+
+    .profile-info-item i {
+        font-size: 1.5rem;
+        color: #A78BFA;
+        min-width: 40px;
+        text-align: center;
+    }
+
+    .info-label {
+        font-weight: bold;
+        color: #A78BFA;
+        margin: 0 1rem;
+        min-width: 100px;
+    }
+
+    .info-value {
+        color: #F8F9FA;
+        flex-grow: 1;
+    }
+
+    .highlight {
+        background: linear-gradient(45deg, rgba(63,43,105,0.5), transparent);
+        border-color: #FFD700;
+    }
+
+    .gold {
+        color: #FFD700 !important;
+        font-weight: bold;
+        text-shadow: 0 0 8px rgba(255,215,0,0.3);
+    }
+
+    .role-badge {
+        padding: 0.3rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9em;
+    }
+
+    .role-badge.admin {
+        background: linear-gradient(45deg, #7F5AF0, #A78BFA);
+        color: #FFF;
+    }
+
+    .role-badge.user {
+        background: linear-gradient(45deg, #4B4453, #B0A8B9);
+        color: #FFF;
+    }
+
+    .magic-edit-btn {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(45deg, #3B185F, #7F5AF0);
+        border: none;
+        color: #FFF;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        margin-top: 2rem;
+    }
+
+    .magic-edit-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(127,90,240,0.4);
+    }
+
+    .magic-not-found {
+        text-align: center;
+        padding: 3rem;
+        color: #A78BFA;
+        border: 2px dashed #7F5AF0;
+        border-radius: 15px;
+    }
+
+    .magic-not-found i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+</style>

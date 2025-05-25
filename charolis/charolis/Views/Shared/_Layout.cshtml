@@ -3,48 +3,320 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - charolis</title>
+    <title>@ViewData["Title"] - Charolis</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/charolis.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poiret+One&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0F0E15;
+            color: #F8F9FA;
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Навігаційна панель */
+        .navbar {
+            background: linear-gradient(135deg, #0F0E15 0%, #1A1A1A 100%);
+            border-bottom: 1px solid rgba(127,90,240,0.2) !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .brand-logo {
+            font-family: 'Poiret One', cursive;
+            font-size: 2.2rem;
+            letter-spacing: 1.5px;
+            color: #F8F9FA !important;
+            transition: all 0.3s ease;
+            text-shadow: 0 2px 4px rgba(127,90,240,0.4);
+        }
+
+        .brand-logo:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
+        }
+
+        .nav-link {
+            color: #F8F9FA !important;
+            position: relative;
+            font-weight: 400;
+            padding: 0.5rem 1.2rem !important;
+            margin: 0 10px;
+            border-radius: 6px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #A78BFA;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(127,90,240,0.1);
+            color: #A78BFA !important;
+        }
+
+        .nav-link:hover::before {
+            width: 100%;
+        }
+
+        /* Основний контент */
+        .container {
+            flex: 1;
+            padding-top: 40px;
+        }
+
+        /* Картки товарів */
+        .product-card {
+            background: linear-gradient(145deg, #1A1A1A 0%, #0F0E15 100%);
+            border: 1px solid rgba(127,90,240,0.3);
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(127,90,240,0.2);
+            border-color: #7F5AF0;
+        }
+
+        .product-image {
+            height: 280px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        }
+
+        /* Кнопки */
+        .btn-custom {
+            background: linear-gradient(45deg, #7F5AF0 0%, #A78BFA 100%);
+            color: #F8F9FA;
+            border: none;
+            padding: 0.8rem 2.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255,255,255,0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(127,90,240,0.3);
+        }
+
+        .btn-custom:hover::before {
+            left: 100%;
+        }
+
+        /* Футер */
+        .footer {
+            background: #1A1A1A;
+            border-top: 1px solid rgba(127,90,240,0.2) !important;
+            margin-top: auto;
+            padding: 30px 0 20px;
+        }
+
+        .footer a {
+            color: #F8F9FA !important;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .footer a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #A78BFA;
+            transition: width 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #A78BFA !important;
+        }
+
+        .footer a:hover::after {
+            width: 100%;
+        }
+
+        .social-icon {
+            font-size: 1.6rem;
+            margin: 0 12px;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background: rgba(127,90,240,0.1);
+            transform: translateY(-3px);
+        }
+
+        .nav-link {
+            margin: 8px 0;
+            padding: 0.8rem 1rem !important;
+        }
+
+        .brand-logo {
+            font-size: 1.8rem;
+        }
+
+        /* Додаткові ефекти */
+        .glow-text {
+            text-shadow: 0 0 12px rgba(127,90,240,0.4);
+        }
+
+        .hover-glow {
+            transition: filter 0.3s ease;
+        }
+
+        .hover-glow:hover {
+            filter: drop-shadow(0 0 8px rgba(127,90,240,0.4));
+        }
+
+        /* Стилі для блоку привітання та кнопки виходу */
+        .nav-item.user-greeting {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            margin-left: auto;
+        }
+
+        .user-greeting-text {
+            color: #A78BFA;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .auth-btn {
+            background: rgba(127,90,240,0.2);
+            border: 1px solid #A78BFA;
+            color: #F8F9FA;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .auth-btn:hover {
+            background: #7F5AF0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(127,90,240,0.3);
+        }
+
+        .user-greeting-text {
+            font-size: 0.85rem;
+        }
+
+        .auth-btn {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">charolis</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand brand-logo" asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-magic me-2"></i>CHAROLIS
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="User" asp-action="Profile">Profile</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li class="nav-item user-greeting">
+                            <span class="user-greeting-text">✨ Вітаємо, <strong>@User.Identity.Name</strong>!</span>
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="auth-btn">
+                                    <i class="fas fa-sign-out-alt"></i>Вийти
+                                </button>
+                            </form>
                         </li>
-                    </ul>
-                </div>
+                    }
+                </ul>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - charolis - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    </nav>
+</header>
+
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                <p>&copy; 2025 CHAROLIS - Mystical Arts Collective</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-etsy"></i></a>
+                <a href="#" class="social-icon"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
