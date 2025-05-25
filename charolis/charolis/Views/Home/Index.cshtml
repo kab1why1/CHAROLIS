@@ -1,60 +1,169 @@
-﻿@{
-    ViewData["Title"] = "Головна сторінка";
-}
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+﻿<div class="admin-dashboard">
     <div class="container-fluid">
-        <a class="navbar-brand" asp-controller="Home" asp-action="Index">Charolis</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Index">Головна</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="User" asp-action="Index">Користувачі</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Product" asp-action="Index">Товари</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Order" asp-action="Index">Замовлення</a>
-                </li>
-                @if (User.Identity?.IsAuthenticated ?? false)
-                {
-                }
-            </ul>
+        <div class="row g-4">
+            <!-- Заголовок -->
+            <div class="col-12">
+                <div class="dashboard-header p-4 magic-header">
+                    <h1 class="mb-0">
+                        <i class="fas fa-hat-wizard me-3"></i>charolis
+                    </h1>
+                    <div class="magic-sparkles"></div>
+                </div>
+            </div>
 
-            <ul class="navbar-nav">
-                @if (User.Identity?.IsAuthenticated ?? false)
-                {
-                    <li class="nav-item">
-                        <span class="nav-link">Вітаємо, @User.Identity.Name!</span>
-                    </li>
-                    <li class="nav-item">
-                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-link nav-link">Вийти</button>
-                        </form>
-                    </li>
-                }
-                else
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Account" asp-action="Login">Увійти</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Account" asp-action="Register">Реєстрація</a>
-                    </li>
-                }
-            </ul>
+            <!-- Статистика -->
+            <div class="col-12">
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="card stat-card magic-card-1">
+                            <div class="card-body">
+                                <i class="stat-icon fas fa-hat-wizard"></i>
+                                <h2>@ViewBag.TotalUsers</h2>
+                                <p class="mb-0">Користувачі</p>
+                                <div class="magic-border"></div>
+                                <a asp-controller="User" asp-action="Index" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card stat-card magic-card-2">
+                            <div class="card-body">
+                                <i class="stat-icon fas fa-flask"></i>
+                                <h2>@ViewBag.TotalDishes</h2>
+                                <p class="mb-0">Товари</p>
+                                <div class="magic-border"></div>
+                                <a asp-controller="Product" asp-action="Index" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card stat-card magic-card-3">
+                            <div class="card-body">
+                                <i class="stat-icon fas fa-scroll"></i>
+                                <h2>@ViewBag.TotalOrders</h2>
+                                <p class="mb-0">Замовлення</p>
+                                <div class="magic-border"></div>
+                                <a asp-controller="Order" asp-action="Index" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card stat-card magic-card-4">
+                            <div class="card-body">
+                                <i class="stat-icon fas fa-dragon"></i>
+                                <h2>@ViewBag.TotalReviews</h2>
+                                <p class="mb-0">Кошик</p>
+                                <div class="magic-border"></div>
+                                <a asp-controller="Cart" asp-action="Index" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</nav>
-
-<div class="container mt-5">
-    <h1>Ласкаво просимо до Charolis!</h1>
-    <p>Оберіть розділ з навігації вище для перегляду користувачів, товарів або замовлень.</p>
 </div>
+
+<style>
+    .admin-dashboard {
+        padding: 2rem 0;
+        background: rgba(15,14,21,0.95);
+    }
+
+    .magic-header {
+        background: linear-gradient(45deg, #2A0944, #3B185F);
+        border-radius: 15px;
+        position: relative;
+        box-shadow: 0 0 30px rgba(127,90,240,0.3);
+    }
+
+    .magic-header h1 {
+        color: #A78BFA;
+        font-family: 'MedievalSharp', cursive;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .stat-card {
+        background: rgba(26,26,26,0.8);
+        border: 2px solid #7F5AF0;
+        border-radius: 15px;
+        color: #F8F9FA;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(127,90,240,0.2);
+    }
+
+    .magic-border {
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(45deg, #7F5AF0, #A78BFA, transparent 60%);
+        z-index: -1;
+        filter: blur(10px);
+        opacity: 0.5;
+    }
+
+    .stat-icon {
+        color: #A78BFA;
+        font-size: 2.5rem;
+        text-shadow: 0 0 15px rgba(167,139,250,0.4);
+    }
+
+    .btn-magic-action {
+        width: 100%;
+        padding: 1.2rem;
+        background: linear-gradient(45deg, #3B185F, #7F5AF0);
+        border: none;
+        color: #F8F9FA;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-magic-action::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg,
+            transparent 20%,
+            rgba(255,255,255,0.1) 50%,
+            transparent 80%);
+        animation: magic-flow 4s infinite linear;
+    }
+
+    @@keyframes magic-flow {
+        100% { transform: rotate(360deg); }
+    }
+
+    .btn-magic-action:hover {
+        transform: translateX(8px);
+        box-shadow: 0 8px 20px rgba(127,90,240,0.4);
+    }
+
+    .magic-actions {
+        background: rgba(26,26,26,0.8);
+        border: 2px solid #7F5AF0;
+        border-radius: 15px;
+    }
+
+    .magic-actions-header {
+        background: linear-gradient(45deg, #3B185F, #7F5AF0);
+        color: #F8F9FA !important;
+        border-bottom: 2px solid #A78BFA;
+    }
+</style>
+
+<!-- Додати шрифт -->
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">

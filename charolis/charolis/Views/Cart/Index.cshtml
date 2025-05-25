@@ -4,123 +4,402 @@
     ViewData["Title"] = "Кошик";
 }
 
-<h1>@ViewData["Title"]</h1>
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-<div class="mb-3">
-    <strong>Поточний баланс: </strong> @Model.Balance.ToString("C")
-</div>
+<div class="magic-cart-container">
+    <div class="magic-cart-header">
+        <h1 class="magic-title">
+            <i class="fas fa-scroll"></i> @ViewData["Title"]
+        </h1>
+        <div class="magic-balance">
+            <i class="fas fa-coins"></i>
+            <span>Баланс: </span>
+            <div class="balance-amount">@Model.Balance.ToString("C")</div>
+        </div>
+    </div>
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success">@TempData["Message"]</div>
-}
-
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
-
-<table class="table table-bordered">
-    <thead class="table-light">
-        <tr>
-            <th>№</th>
-            <th>Дата створення</th>
-            <th>Сума</th>
-            <th>Статус оплати</th>
-            <th>Дії</th>
-        </tr>
-    </thead>
-    <tbody>
-    @if (Model.Orders.Any())
+    @if (TempData["Message"] != null)
     {
-        @for (int i = 0; i < Model.Orders.Count; i++)
+        <div class="magic-alert success">
+            <i class="fas fa-check-circle"></i> @TempData["Message"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="magic-alert error">
+            <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+        </div>
+    }
+
+    <div class="magic-orders-list">
+        @if (Model.Orders.Any())
         {
-            var order = Model.Orders[i];
-            <tr>
-                <td>@order.Id</td>
-                <td>@order.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
-                <td>@order.Total.ToString("C")</td>
-                <td>
-                    @if (order.IsPaid)
-                    {
-                        <span class="badge bg-success">Оплачено</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger">Не оплачено</span>
-                    }
-                </td>
-                <td>
-                    <!-- Кнопка для модального вікна -->
-                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#orderDetailsModal-@order.Id">
-                        Деталі
-                    </button>
-                </td>
-            </tr>
-
-            <!-- Модальне вікно для деталей замовлення -->
-            <div class="modal fade" id="orderDetailsModal-@order.Id" tabindex="-1" aria-labelledby="orderDetailsLabel-@order.Id" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="orderDetailsLabel-@order.Id">Замовлення №@order.Id</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
+            @foreach (var order in Model.Orders)
+            {
+                <div class="magic-order-card">
+                    <div class="order-header">
+                        <div class="order-id">
+                            <i class="fas fa-seal"></i> Замовлення #@order.Id
                         </div>
-                        <div class="modal-body">
-                            <p><strong>Дата створення:</strong> @order.CreatedAt.ToLocalTime().ToString("g")</p>
-                            <p><strong>Статус:</strong>
-                                @if (order.IsPaid)
-                                {
-                                    <span class="badge bg-success">Оплачено</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">Не оплачено</span>
-                                }
-                            </p>
+                        <div class="order-date">
+                            @order.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                        </div>
+                    </div>
+                    
+                    <div class="order-body">
+                        <div class="order-status">
+                            @if (order.IsPaid)
+                            {
+                                <span class="status-badge paid">
+                                    <i class="fas fa-check"></i> Оплачено
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="status-badge unpaid">
+                                    <i class="fas fa-hourglass-half"></i> Очікує
+                                </span>
+                            }
+                        </div>
+                        <div class="order-total">
+                            <i class="fas fa-gem"></i> @order.Total.ToString("C")
+                        </div>
+                    </div>
 
-                            <h6>Список товарів:</h6>
-                            <ul>
-                                @foreach (var item in order.Items)
-                                {
-                                    <li>
-                                        @item.Product.Name — @item.Quantity шт. × @item.Product.Price.ToString("C")
-                                    </li>
-                                }
-                            </ul>
+                    <div class="order-actions">
+                        <button class="magic-details-btn" data-bs-toggle="modal" data-bs-target="#orderDetailsModal-@order.Id">
+                            <i class="fas fa-eye"></i> Переглянути
+                        </button>
+                    </div>
+                </div>
 
-                            <p><strong>Загальна сума:</strong> @order.Total.ToString("C")</p>
+                <!-- Модальне вікно -->
+                <div class="modal magic-modal" id="orderDetailsModal-@order.Id">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">
+                                    <i class="fas fa-scroll"></i> Замовлення #@order.Id
+                                </h3>
+                                <button class="magic-close-btn" data-bs-dismiss="modal">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-section">
+                                    <div class="modal-row">
+                                        <span class="modal-label"><i class="fas fa-calendar-alt"></i> Дата:</span>
+                                        <span>@order.CreatedAt.ToLocalTime().ToString("g")</span>
+                                    </div>
+                                    <div class="modal-row">
+                                        <span class="modal-label"><i class="fas fa-info-circle"></i> Статус:</span>
+                                        @if (order.IsPaid)
+                                        {
+                                            <span class="status-badge paid">Оплачено</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-badge unpaid">Не оплачено</span>
+                                        }
+                                    </div>
+                                </div>
 
-                            <div class="mt-3">
+                                <div class="modal-section">
+                                    <h4 class="modal-subtitle">
+                                        <i class="fas fa-potion"></i> Товари: 
+                                    </h4>
+                                    <div class="items-list">
+                                        @foreach (var item in order.Items)
+                                        {
+                                            <div class="magic-item">
+                                                <i class="fas fa-potion"></i>
+                                                <span class="item-name">@item.Product.Name</span>
+                                                <span class="item-quantity">×@item.Quantity</span>
+                                                <span class="item-price">@item.Product.Price.ToString("C")</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="modal-section total-section">
+                                    <div class="total-label">Сума до сплати: </div>
+                                    <div class="total-value">@order.Total.ToString("C")</div>
+                                </div>
+
                                 @if (!order.IsPaid)
                                 {
-                                    <form asp-action="Pay" method="post" class="d-inline">
+                                    <form asp-action="Pay" method="post" class="payment-form">
                                         <input type="hidden" name="orderId" value="@order.Id" />
-                                        <button type="submit" class="btn btn-success">Оплатити</button>
+                                        <button type="submit" class="magic-pay-btn">
+                                            <i class="fas fa-coins"></i>Оплатити
+                                        </button>
                                     </form>
                                 }
                                 else
                                 {
-                                    <form asp-action="CancelPayment" method="post" class="d-inline">
+                                    <form asp-action="CancelPayment" method="post" class="payment-form">
                                         <input type="hidden" name="orderId" value="@order.Id" />
-                                        <button type="submit" class="btn btn-warning">Скасувати оплату</button>
+                                        <button type="submit" class="magic-cancel-btn">
+                                            <i class="fas fa-undo"></i> Скасувати оплату
+                                        </button>
                                     </form>
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
+            }
+        }
+        else
+        {
+            <div class="magic-empty-cart">
+                <i class="fas fa-box-open"></i>
+                <h3>Недостатньо грошей для оплати</h3>
             </div>
         }
+    </div>
+</div>
+
+<style>
+    .magic-cart-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: rgba(15,14,21,0.95);
+        border: 2px solid #7F5AF0;
+        border-radius: 15px;
+        box-shadow: 0 0 30px rgba(127,90,240,0.2);
     }
-    else
-    {
-        <tr>
-            <td colspan="5" class="text-center">Кошик порожній.</td>
-        </tr>
+
+    .magic-cart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid #7F5AF0;
     }
-    </tbody>
-</table>
+
+    .magic-title {
+        font-family: 'MedievalSharp', cursive;
+        color: #A78BFA;
+        margin: 0;
+        text-shadow: 0 0 10px rgba(167,139,250,0.3);
+    }
+
+    .magic-balance {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: rgba(63, 43, 105, 0.3);
+        padding: 0.8rem 1.5rem;
+        border-radius: 10px;
+        color: #A78BFA;
+    }
+
+    .balance-amount {
+        font-weight: bold;
+        color: #FFD700;
+        text-shadow: 0 0 8px rgba(255,215,0,0.3);
+    }
+
+    .magic-alert {
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .magic-alert.success {
+        background: rgba(46, 213, 115, 0.1);
+        border: 2px solid #2ED573;
+        color: #2ED573;
+    }
+
+    .magic-alert.error {
+        background: rgba(255, 71, 87, 0.1);
+        border: 2px solid #FF4757;
+        color: #FF4757;
+    }
+
+    .magic-orders-list {
+        margin-top: 2rem;
+    }
+
+    .magic-order-card {
+        background: rgba(26,26,26,0.9);
+        border: 2px solid #7F5AF0;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .magic-order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(127,90,240,0.3);
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .order-id {
+        color: #A78BFA;
+        font-family: 'MedievalSharp', cursive;
+    }
+
+    .order-date {
+        color: #7F5AF0;
+        font-size: 0.9em;
+    }
+
+    .order-body {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+
+    .status-badge.paid {
+        background: linear-gradient(45deg, #2ED573, #1E8449);
+        color: #FFF;
+    }
+
+    .status-badge.unpaid {
+        background: linear-gradient(45deg, #FF4757, #B33771);
+        color: #FFF;
+    }
+
+    .order-total {
+        color: #FFD700;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .magic-details-btn {
+        background: linear-gradient(45deg, #3B185F, #7F5AF0);
+        border: none;
+        color: #FFF;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .magic-details-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(127,90,240,0.4);
+    }
+
+    .magic-modal .modal-content {
+        background: #1A1A1A;
+        border: 2px solid #7F5AF0;
+        border-radius: 15px;
+        color: #FFF;
+    }
+
+    .modal-header {
+        border-bottom: 2px solid #7F5AF0;
+        padding: 1.5rem;
+    }
+
+    .modal-title {
+        font-family: 'MedievalSharp', cursive;
+        color: #A78BFA;
+    }
+
+    .magic-close-btn {
+        background: none;
+        border: none;
+        color: #A78BFA;
+        font-size: 1.5rem;
+    }
+
+    .modal-section {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: rgba(26,26,26,0.9);
+        border-radius: 10px;
+    }
+
+    .modal-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .modal-label {
+        color: #7F5AF0;
+        min-width: 150px;
+    }
+
+    .items-list {
+        border-left: 3px solid #7F5AF0;
+        padding-left: 1rem;
+    }
+
+    .magic-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px dashed rgba(167,139,250,0.1);
+    }
+
+    .total-section {
+        background: linear-gradient(45deg, #3B185F, #7F5AF0);
+        padding: 1.5rem;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.2em;
+    }
+
+    .magic-pay-btn {
+        background: linear-gradient(45deg, #2ED573, #1E8449);
+        border: none;
+        color: #FFF;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .magic-cancel-btn {
+        background: linear-gradient(45deg, #FF4757, #B33771);
+        border: none;
+        color: #FFF;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .magic-empty-cart {
+        text-align: center;
+        padding: 3rem;
+        border: 2px dashed #7F5AF0;
+        border-radius: 15px;
+        color: #A78BFA;
+    }
+
+    .magic-empty-cart i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+</style>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -4,47 +4,183 @@
     ViewData["Title"] = "Реєстрація";
 }
 
-<h1>@ViewData["Title"]</h1>
+<style>
+    /* Загальні стилі */
+    body {
+        background-color: #0F0E15;
+        color: #F8F9FA;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 
-<div asp-validation-summary="All" class="text-danger mb-3"></div>
+    .register-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2.5rem;
+        background: linear-gradient(145deg, #0F0E15 0%, #1A1A1A 100%);
+        border: 1px solid #7F5AF0;
+        border-radius: 20px;
+        box-shadow: 0 0 40px rgba(127,90,240,0.3);
+    }
 
-<form asp-controller="Account" asp-action="Register" method="post" class="row g-3">
+    /* Стилі форми */
+    .magic-form {
+        position: relative;
+        z-index: 2;
+    }
 
-    <div class="col-md-6">
-        <label class="form-label">Логін *</label>
-        <input name="username" class="form-control" />
-    </div>
+    .form-label {
+        color: #A78BFA;
+        font-weight: 400;
+        margin-bottom: 0.5rem;
+    }
 
-    <div class="col-md-6">
-        <label class="form-label">Email *</label>
-        <input name="email" class="form-control" type="email" />
-    </div>
+    .form-control {
+        background: rgba(26,26,26,0.8);
+        border: 2px solid #7F5AF0;
+        color: #F8F9FA;
+        border-radius: 10px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
 
-    <div class="col-md-6">
-        <label class="form-label">Пароль *</label>
-        <input name="password" class="form-control" type="password" minlength="6" />
-    </div>
+    .form-control:focus {
+        border-color: #A78BFA;
+        box-shadow: 0 0 15px rgba(167,139,250,0.3);
+        background: rgba(26,26,26,0.9);
+    }
 
-    <div class="col-md-6">
-        <label class="form-label">Підтвердження пароля *</label>
-        <input name="confirmPassword" class="form-control" type="password" />
-    </div>
+    /* Кнопки */
+    .btn-primary {
+        background: linear-gradient(45deg, #7F5AF0, #A78BFA);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
 
-    <div class="col-md-6">
-        <label class="form-label">Телефон</label>
-        <input name="phoneNumber" class="form-control" type="tel" />
-    </div>
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(127,90,240,0.4);
+    }
 
-    <div class="col-12">
-        <label class="form-label">Адреса</label>
-        <input name="address" class="form-control" maxlength="200" />
-    </div>
+    .btn-link {
+        color: #A78BFA !important;
+        text-decoration: none;
+        position: relative;
+    }
 
-    <div class="col-12">
-        <button type="submit" class="btn btn-primary">Зареєструватися</button>
-        <a asp-action="Login" class="btn btn-link ms-3">У мене вже є акаунт</a>
-    </div>
-</form>
+    .btn-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background: #A78BFA;
+        transition: width 0.3s ease;
+    }
+
+    .btn-link:hover::after {
+        width: 100%;
+    }
+
+    /* Заголовок */
+    h1 {
+        color: #F8F9FA;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, #7F5AF0, #A78BFA);
+        border-radius: 2px;
+    }
+
+    /* Валідація */
+    .text-danger {
+        color: #ff6b6b !important;
+        font-size: 0.9em;
+    }
+
+    /* Анімації */
+    @@keyframes floating {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .magic-orb {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(127,90,240,0.15) 0%, transparent 60%);
+        filter: blur(50px);
+        animation: floating 6s ease-in-out infinite;
+    }
+
+    .orb-1 { top: 20%; left: 10%; }
+    .orb-2 { top: 60%; right: 15%; }
+</style>
+
+<div class="register-container position-relative">
+    <div class="magic-orb orb-1"></div>
+    <div class="magic-orb orb-2"></div>
+    
+    <h1>@ViewData["Title"]</h1>
+    
+    <div asp-validation-summary="All" class="text-danger mb-4"></div>
+
+    <form asp-controller="Account" asp-action="Register" method="post" class="magic-form row g-4">
+        <div class="col-md-6">
+            <label class="form-label">Логін *</label>
+            <input name="username" class="form-control" placeholder="Введіть логін" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Email *</label>
+            <input name="email" class="form-control" type="email" placeholder="example@domain.com" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Пароль *</label>
+            <input name="password" class="form-control" type="password" minlength="6" placeholder="Не менше 6 символів" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Підтвердження пароля *</label>
+            <input name="confirmPassword" class="form-control" type="password" placeholder="Повторіть пароль" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Телефон</label>
+            <input name="phoneNumber" class="form-control" type="tel" placeholder="+380 XX XXX XX XX" />
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Адреса</label>
+            <input name="address" class="form-control" maxlength="200" placeholder="Вулиця, будинок, місто" />
+        </div>
+
+        <div class="col-12 text-center mt-4">
+            <button type="submit" class="btn btn-primary px-5 py-2">
+                <i class="fas fa-magic me-2"></i>Створити акаунт
+            </button>
+            <a asp-action="Login" class="btn btn-link ms-3">Вже маю обліковий запис</a>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

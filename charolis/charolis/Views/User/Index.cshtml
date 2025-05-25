@@ -2,48 +2,157 @@
 @using Microsoft.AspNetCore.Authorization
 
 @{
-    ViewData["Title"] = "Список користувачів";
+    ViewData["Title"] = "Користувачі";
 }
 
-<h1>@ViewData["Title"]</h1>
+<style>
+    body {
+        background: #0F0E15;
+        color: #F8F9FA;
+    }
 
-<div class="mb-3">
+    .magic-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    h1 {
+        font-family: 'Cinzel Decorative', cursive;
+        color: #A78BFA;
+        border-bottom: 2px solid #7F5AF0;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .magic-btn {
+        border: none;
+        border-radius: 8px;
+        padding: 0.7rem 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #7F5AF0, #A78BFA);
+        color: white !important;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(127,90,240,0.4);
+    }
+
+    .magic-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(26,26,26,0.9);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .magic-table th {
+        background: #3B185F;
+        padding: 1.2rem;
+        font-family: 'MedievalSharp', cursive;
+        border-bottom: 2px solid #7F5AF0;
+    }
+
+    .magic-table td {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(167,139,250,0.1);
+    }
+
+    .magic-table tr:hover {
+        background: rgba(127,90,240,0.05);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-warning {
+        background: linear-gradient(45deg, #FFC107, #FF9800);
+        color: #1A1A1A !important;
+    }
+
+    .btn-danger {
+        background: linear-gradient(45deg, #F44336, #E91E63);
+        color: white !important;
+    }
+
+    .magic-table .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .bi-icon {
+        font-size: 1.1em;
+    }
+    
+    a {
+        text-decoration: none;
+    }
+</style>
+
+<div class="magic-container">
+    <h1>@ViewData["Title"]</h1>
+    
     @if (User.IsInRole("Admin"))
     {
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i> Створити користувача
-        </a>
+        <div class="mb-4">
+            <a asp-action="Create" class="magic-btn btn-primary">
+                <i class="bi bi-stars bi-icon"></i>Додати користувача
+            </a>
+        </div>
     }
+
+    <div class="table-responsive">
+        <table class="magic-table">
+            <thead>
+                <tr>
+                    <th>Ім'я</th>
+                    <th>Пошта</th>
+                    <th>Роль</th>
+                    <th>Телефон</th>
+                    <th>Лігво</th>
+                    <th>Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td>@u.Username</td>
+                        <td>@u.Email</td>
+                        <td>@u.Role</td>
+                        <td>@u.PhoneNumber</td>
+                        <td>@u.Address</td>
+                        <td>
+                            <div class="action-buttons">
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@u.Id" 
+                                       class="btn btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@u.Id" 
+                                       class="btn btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Логін</th>
-        <th>Email</th>
-        <th>Роль</th>
-        <th>Телефон</th>
-        <th>Адреса</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var u in Model)
-    {
-        <tr>
-            <td>@u.Username</td>
-            <td>@u.Email</td>
-            <td>@u.Role</td>
-            <td>@u.PhoneNumber</td>
-            <td>@u.Address</td>
-            <td>
-                @if (User.IsInRole("Admin"))
-                {
-                    <a asp-action="Edit" asp-route-id="@u.Id" class="btn btn-sm btn-warning ms-1">Редагувати</a>
-                    <a asp-action="Delete" asp-route-id="@u.Id" class="btn btn-sm btn-danger ms-1">Видалити</a>
-                }
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<!-- Додати шрифти -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative&family=MedievalSharp&display=swap" rel="stylesheet">

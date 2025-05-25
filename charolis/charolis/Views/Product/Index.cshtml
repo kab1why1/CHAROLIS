@@ -1,66 +1,189 @@
 @model IEnumerable<charolis.Entities.Product>
 
 @{
-    ViewData["Title"] = "Список товарів";
+    ViewData["Title"] = "Товари";
 }
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Index">Головна</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="User" asp-action="Index">Користувачі</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Product" asp-action="Index">Товари</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Order" asp-action="Index">Замовлення</a>
-                </li>
-            </ul>
-        </div>
+<style>
+    body {
+        background: #0F0E15;
+        color: #F8F9FA;
+    }
+
+    .magic-navbar {
+        background: linear-gradient(45deg, #2A0944, #3B185F);
+        border-bottom: 2px solid #7F5AF0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .nav-link {
+        color: #A78BFA !important;
+        font-family: 'Poiret One', cursive;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #A78BFA;
+        transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+        width: 100%;
+    }
+
+    .magic-container {
+        background: rgba(26,26,26,0.9);
+        border: 2px solid #7F5AF0;
+        border-radius: 15px;
+        box-shadow: 0 0 30px rgba(127,90,240,0.2);
+        margin: 2rem auto;
+        padding: 2rem;
+    }
+
+    .magic-table {
+        --bs-table-bg: transparent;
+        --bs-table-color: #F8F9FA;
+        --bs-table-border-color: rgba(167,139,250,0.2);
+    }
+
+    .magic-table th {
+        background: linear-gradient(45deg, #3B185F, #7F5AF0);
+        font-family: 'MedievalSharp', cursive;
+        border-bottom: 2px solid #A78BFA !important;
+    }
+
+    .magic-table td {
+        vertical-align: middle;
+    }
+
+    .magic-table tr:hover {
+        background: rgba(127,90,240,0.05);
+    }
+
+    .status-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+    }
+
+    .available {
+        background: linear-gradient(45deg, #4CAF50, #45a049);
+    }
+
+    .unavailable {
+        background: linear-gradient(45deg, #f44336, #e53935);
+    }
+
+    .btn-magic {
+        border: none;
+        border-radius: 8px;
+        padding: 0.6rem 1.2rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #7F5AF0, #A78BFA);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(45deg, #3B185F, #2A0944);
+    }
+
+    .btn-info {
+        background: linear-gradient(45deg, #2196F3, #1976D2);
+    }
+
+    .btn-warning {
+        background: linear-gradient(45deg, #FFC107, #FFA000);
+    }
+
+    .btn-danger {
+        background: linear-gradient(45deg, #f44336, #d32f2f);
+    }
+
+    .btn-magic:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+        font-family: 'Cinzel Decorative', cursive;
+        color: #A78BFA;
+        border-bottom: 2px solid #7F5AF0;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    a {
+        text-decoration: none;
+        color: white;
+    }
+</style>
+
+<div class="container magic-container">
+    <h1>@ViewData["Title"]</h1>
+    
+    <div class="mb-4">
+        <a href="@Url.Action("Create", "Product")" class="btn-magic btn-primary">
+            <i class="fas fa-plus-circle"></i> Додати товар
+        </a>
     </div>
-</nav>
 
-<div class="container mt-5">
-    <h1>Список товарів</h1>
-    <a class="btn btn-primary mb-3" href="@Url.Action("Create", "Product")">Додати новий товар</a>
-    <a class="btn btn-secondary mb-3" href="@Url.Action("Index", "Home")">Повернутись на головну</a>
-
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Назва</th>
-                <th>Опис</th>
-                <th>Ціна</th>
-                <th>Доступність</th>
-                <th>Дії</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in Model)
-            {
+    <div class="table-responsive">
+        <table class="table magic-table">
+            <thead>
                 <tr>
-                    <td>@product.Id</td>
-                    <td>@product.Name</td>
-                    <td>@product.Description</td>
-                    <td>@product.Price.ToString("C")</td>
-                    <td>@(product.IsAvailable ? "Так" : "Ні")</td>
-                    <td>
-                        <a href="@Url.Action("Details", "Product", new { id = product.Id })" class="btn btn-info btn-sm">Деталі</a>
-                        <a href="@Url.Action("Edit", "Product", new { id = product.Id })" class="btn btn-warning btn-sm">Редагувати</a>
-                        <a href="@Url.Action("Delete", "Product", new { id = product.Id })" class="btn btn-danger btn-sm">Видалити</a>
-                    </td>
+                    <th>#</th>
+                    <th>Назва</th>
+                    <th>Опис</th>
+                    <th>Ціна</th>
+                    <th>Статус</th>
+                    <th>Дії</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <td>@product.Id</td>
+                        <td>@product.Name</td>
+                        <td>@product.Description</td>
+                        <td>@product.Price.ToString("C")</td>
+                        <td>
+                            <span class="status-badge @(product.IsAvailable ? "available" : "unavailable")">
+                                @(product.IsAvailable ? "У наявності" : "Закінчилось")
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a href="@Url.Action("Details", "Product", new { id = product.Id })" 
+                                   class="btn-magic btn-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="@Url.Action("Edit", "Product", new { id = product.Id })" 
+                                   class="btn-magic btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="@Url.Action("Delete", "Product", new { id = product.Id })" 
+                                   class="btn-magic btn-danger">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<!-- Додати шрифти -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative&family=MedievalSharp&display=swap" rel="stylesheet">
