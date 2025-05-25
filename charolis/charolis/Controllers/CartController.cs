@@ -29,6 +29,8 @@ namespace charolis.Controllers
 
             var orders = await _context.Orders
                 .Where(o => o.UserId == user.Id)
+                .Include(o => o.Items)
+                    .ThenInclude(oi => oi.Product)
                 .OrderByDescending(o => o.CreatedAt)
                 .ToListAsync();
 
@@ -50,7 +52,9 @@ namespace charolis.Controllers
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (user == null) return NotFound();
 
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == user.Id);
+            var order = await _context.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == user.Id);
             if (order == null) return NotFound();
 
             if (order.IsPaid)
@@ -83,7 +87,9 @@ namespace charolis.Controllers
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (user == null) return NotFound();
 
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == user.Id);
+            var order = await _context.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == user.Id);
             if (order == null) return NotFound();
 
             if (!order.IsPaid)
